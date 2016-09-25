@@ -142,7 +142,9 @@ Here's this module being exercised from an iex session:
 
   @spec new_game :: state
   def new_game do
-  end
+	r = Hangman.Dictionary.random_word
+	state = %{word: r, list: [], count: 10}
+  end 
 
 
   @doc """
@@ -152,6 +154,7 @@ Here's this module being exercised from an iex session:
   """
   @spec new_game(binary) :: state
   def new_game(word) do
+	state= %{word: word, list: [], count: 10}
   end
 
 
@@ -177,6 +180,20 @@ Here's this module being exercised from an iex session:
 
   @spec make_move(state, ch) :: { state, atom, optional_ch }
   def make_move(state, guess) do
+	List.insert_at(state.list, 0, guess)
+	cond do
+		String.contains?(state.word, to_string(guess))->
+			if (1==0) do
+				"hello"
+			else
+				{state, :good_guess, guess}
+			end
+			
+		state.count == 10 ->	
+				{state, :lost, guess}
+		true -> 
+				{state, :bad_guess, guess}
+	end
   end
 
 
@@ -199,6 +216,7 @@ Here's this module being exercised from an iex session:
 
   @spec letters_used_so_far(state) :: [ binary ]
   def letters_used_so_far(state) do
+	state.list
   end
 
   @doc """
@@ -211,6 +229,7 @@ Here's this module being exercised from an iex session:
 
   @spec turns_left(state) :: integer
   def turns_left(state) do
+	state.count
   end
 
   @doc """
