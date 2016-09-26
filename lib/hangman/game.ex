@@ -181,18 +181,17 @@ Here's this module being exercised from an iex session:
   @spec make_move(state, ch) :: { state, atom, optional_ch }
   def make_move(state, guess) do
 	List.insert_at(state.list, 0, guess)
+	
 	cond do
-		String.contains?(state.word, to_string(guess))->
-			if (1==0) do
-				"hello"
-			else
-				{state, :good_guess, guess}
-			end
-			
-		state.count == 10 ->	
-				{state, :lost, guess}
-		true -> 
-				{state, :bad_guess, guess}
+		String.contains?(state.word, to_string(guess))==true && Enum.all?(String.codepoints(state.word), fn(x)-> String.contains?(to_string(state.list), x) end) ->
+			{%{state | list: List.insert_at(state.list, 0, guess)}, :won, guess}
+		String.contains?(state.word, to_string(guess))==true ->
+			{%{state | list: List.insert_at(state.list, 0, guess)}, :good_guess, guess}
+		String.contains?(state.word, to_string(guess))==false && state.count==0 ->
+			{%{state | count: state.count-1}, :lost, guess}
+		String.contains?(state.word, to_string(guess))==false->
+			{%{state | count: state.count-1}, :bad_guess, guess}
+		
 	end
   end
 
@@ -203,7 +202,8 @@ Here's this module being exercised from an iex session:
   Return the length of the current word.
   """
   @spec word_length(state) :: integer
-  def word_length(%{ word: word }) do
+  def word_length(state) do
+	String.length(state.word)
   end
 
   @doc """
@@ -233,7 +233,7 @@ Here's this module being exercised from an iex session:
   end
 
   @doc """
-  `word = word_as_string(game, reveal \\ false)`
+  `word = word_as_string(game, _false)`
 
   Returns the word to be guessed. If the optional second argument is
   false, then any unguessed letters will be returned as underscores.
@@ -242,7 +242,19 @@ Here's this module being exercised from an iex session:
   """
 
   @spec word_as_string(state, boolean) :: binary
-  def word_as_string(state, reveal \\ false) do
+  def word_as_string(state) do
+	astir = for x<- String.codepoints(state.word) do
+		if String.contains?(to_string(state.list), x) do
+			x<>" "
+		else
+			"_"<>" "
+		end
+	end
+	String.trim_trailing(to_string(astir))
+  end
+  
+  def word_as_string(state, true) do
+	String.trim_trailing(to_string(Enum.map(String.codepoints(state.word), fn(x)-> x<>" " end)))
   end
 
   ###########################
