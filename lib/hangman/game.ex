@@ -195,6 +195,7 @@ Here's this module being exercised from an iex session:
 			{%{state | count: state.count-1, list: List.insert_at(state.list, 0, guess)}, :bad_guess, guess}
 		
 	end
+	
   end
 
 

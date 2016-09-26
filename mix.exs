@@ -14,8 +14,8 @@ defmodule Hangman.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
-	#[applications: [:hangman]]
+    #[applications: [:logger]]
+	[applications: [:hangman]]
   end
 
   # Dependencies can be Hex packages:
@@ -28,6 +28,6 @@ defmodule Hangman.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    #[{:hangman, "~> 0.1.0"}]
+    [{:hangman, "~> 0.1.0"}]
   end
 end
