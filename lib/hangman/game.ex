@@ -187,10 +187,12 @@ Here's this module being exercised from an iex session:
 			{%{state | list: List.insert_at(state.list, 0, guess)}, :won, guess}
 		String.contains?(state.word, to_string(guess))==true ->
 			{%{state | list: List.insert_at(state.list, 0, guess)}, :good_guess, guess}
+		#String.contains?(state.word, to_string(guess))==false && state.count==1 ->
+		#	{%{state | count: state.count-1}, :lost, guess}
 		String.contains?(state.word, to_string(guess))==false && state.count==0 ->
 			{%{state | count: state.count-1}, :lost, guess}
 		String.contains?(state.word, to_string(guess))==false->
-			{%{state | count: state.count-1}, :bad_guess, guess}
+			{%{state | count: state.count-1, list: List.insert_at(state.list, 0, guess)}, :bad_guess, guess}
 		
 	end
   end
